@@ -1,43 +1,34 @@
-// Parallax Scrolling Effect
-window.addEventListener('scroll', () => {
-  let offset = window.pageYOffset;
-  document.querySelector('.hero').style.backgroundPositionY = offset * 0.5 + 'px';
-});
-
 // Smooth Scroll for Navigation
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-      behavior: 'smooth'
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
     });
-  });
 });
 
-// Testimonials Carousel
-let index = 0;
-const testimonials = document.querySelectorAll('.testimonial');
-const total = testimonials.length;
-
-setInterval(() => {
-  index = (index + 1) % total;
-  document.querySelector('.testimonial-container').style.transform = `translateX(-${index * 100}%)`;
-}, 4000);
-
-// AJAX Form Submission
+// AJAX form submission (Optional - To send form data without page reload)
 document.getElementById('contactForm').addEventListener('submit', function (e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const formData = new FormData(this);
-  fetch('/submit', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById('responseMessage').textContent = data.message;
-  })
-  .catch(error => {
-    document.getElementById('responseMessage').textContent = 'Error submitting form.';
-  });
-});
+    const formData = new FormData(this);
+    const data = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        message: formData.get('message')
+    };
+
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById('responseMessage').innerHTML = "Your message has been sent!";
+        document.getElementById('contactForm').reset();
+    })
+    .catch
